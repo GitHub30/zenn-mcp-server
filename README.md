@@ -1,3 +1,5 @@
+![ChatGPT-GoogleChrome2025-09-2300-54-01-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/c13dfffc-e67c-4e14-af72-8d293d348417)
+
 # zenn-mcp-server
 
 ## Setup
