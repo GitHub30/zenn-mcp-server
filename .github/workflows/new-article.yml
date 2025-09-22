@@ -1,0 +1,25 @@
+on:
+  repository_dispatch:
+    types: [new_article]
+
+permissions:
+  contents: write
+
+jobs:
+  new_article:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          SLUG=$(TZ=Asia/Tokyo date +%y%m%d%H%M%S)
+          TAGS=$(printf "%s," "${{ join(github.event.client_payload.tags, ',') }}")
+          npx -y zenn-cli new:article --slug $SLUG --title "${{ github.event.client_payload.title }}" --published true
+          sed -i 's|topics: \[\]|topics: ${{ github.event.client_payload.topics_json }}|' articles/$SLUG.md
+          cat <<'EOF' >> articles/$SLUG.md
+          ${{ github.event.client_payload.body }}
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add articles/*
+          git commit -m "add new article: ${{ github.event.client_payload.title }}"
+          git push
